@@ -1,6 +1,6 @@
 .GBHEADER
 	NINTENDOLOGO
-	NAME "TEST"
+	NAME "WALLYSWORLD"
 	ROMDMG
 	LICENSEECODENEW "XX"
 	CARTRIDGETYPE $00
@@ -28,33 +28,46 @@
 
 .ORG $0150
 start:
-	di
-	ld sp, $FFFE
+
+; find vblank period
+find_vblank:
+	ld A, [$FF44]
+	cp 144
+	jp c, find_vblank
 	
-	ld a, %00000001
-	ldh ($FF), a
+; turn off LCD
+ld HL, $FF40
+res 7, [HL]
+res 4, [HL] ; use 8800 for BG tiles
+
 	
-	ld a, %10000000
-	ldh ($26), a
-	ld a, %01110111
-	ldh ($24), a
-	ld a, %11111111
-	ldh ($25), a
+; load tiles into VRAM
+ld DE, tile
+ld HL, $9000
+ld BC, tileend - tile
+
+copy_loop:
+	ld A, [DE]
+	inc DE
+	ld [HL+], A
+	dec BC
+	ld A, B
+	or A, C
+	jp nz, copy_loop
+
+; set the tilemap
+ld HL, $9800
+ld [HL], 80
+
+; turn that shit back on
+ld HL, $FF40
+set 7, [HL]
 
 loop:
-	ld a, 40
-pause:
-	halt
 	nop
-	dec a
-	jr nz, pause
-	
-	ld a, %10001000
-	ldh ($11), a
-	ld a, %11110001
-	ldh ($12), a
-	ld a, %00000000
-	ldh ($13), a
-	ld a, %11000100
-	ldh ($14), a
-	jr loop
+	jp loop
+
+tile:
+	.DB $00,$00,$24,$24,$24,$24,$00,$00
+	.DB $00,$00,$42,$42,$3C,$3C,$00,$00
+tileend:
