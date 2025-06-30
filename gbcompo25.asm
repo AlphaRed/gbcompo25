@@ -75,11 +75,11 @@ skip_loop:
 	dirt_loop:
 		ld [HL+], A
 		dec B
-		jp NZ, dirt_loop
+		jp nz, dirt_loop
 	add HL, DE
 	dec C
 	ld B, 20
-	jp NZ, skip_loop
+	jp nz, skip_loop
 	
 
 ; turn that shit back on
