@@ -38,13 +38,13 @@ find_vblank:
 ; turn off LCD
 ld HL, $FF40
 res 7, [HL]
-res 4, [HL] ; use 8800 for BG tiles
+res 4, [HL] ; use 9000 for BG tiles
 
 	
 ; load tiles into VRAM
-ld DE, tile
+ld DE, bgtiles
 ld HL, $9000
-ld BC, tileend - tile
+ld BC, bgtileend - bgtiles
 
 copy_loop:
 	ld A, [DE]
@@ -56,18 +56,51 @@ copy_loop:
 	jp nz, copy_loop
 
 ; set the tilemap
-ld HL, $9800
-ld [HL], 80
+ld HL, $9800 + 4 * 32
+ld A, 1
+ld B, 20
+
+grass_loop:
+	ld [HL+], A
+	dec B
+	jp nz, grass_loop
+
+ld HL, $9800 + 5 * 32
+ld A, 2
+ld B, 20
+ld DE, 12
+ld C, 13
+
+skip_loop:
+	dirt_loop:
+		ld [HL+], A
+		dec B
+		jp NZ, dirt_loop
+	add HL, DE
+	dec C
+	ld B, 20
+	jp NZ, skip_loop
+	
 
 ; turn that shit back on
 ld HL, $FF40
 set 7, [HL]
 
+; set the palette to default colours
+ld HL, $FF47
+ld [HL], %11100100
+
 loop:
 	nop
 	jp loop
 
-tile:
-	.DB $00,$00,$24,$24,$24,$24,$00,$00
-	.DB $00,$00,$42,$42,$3C,$3C,$00,$00
-tileend:
+bgtiles:
+	.DB $00,$00,$00,$00,$00,$00,$00,$00
+	.DB $00,$00,$00,$00,$00,$00,$00,$00
+	.DB $A5,$00,$FF,$00,$BA,$45,$00,$FF
+	.DB $00,$FF,$00,$FF,$00,$FF,$00,$FF
+	.DB $24,$DB,$82,$7D,$53,$AC,$18,$E7
+	.DB $24,$DB,$03,$FC,$26,$D9,$3A,$C5
+	.DB $80,$0F,$F0,$80,$FF,$F0,$FF,$7F
+	.DB $7F,$0F,$0F,$00,$07,$E0,$00,$F8
+bgtileend:
