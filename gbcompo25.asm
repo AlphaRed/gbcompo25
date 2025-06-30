@@ -80,7 +80,33 @@ skip_loop:
 	dec C
 	ld B, 20
 	jp nz, skip_loop
-	
+
+; load sprites into VRAM
+ld DE, sprites
+ld HL, $8000
+ld BC, spritesend - sprites
+
+copy_sprite_loop:
+	ld A, [DE]
+	inc DE
+	ld [HL+], A
+	dec BC
+	ld A, B
+	or A, C
+	jp nz, copy_sprite_loop
+
+; set sprite pos
+ld HL, $FE00
+ld A, 16
+ld [HL], A
+
+ld HL, $FE00 + 8
+ld A, 16
+ld [HL], A
+
+ld HL, $FE00 + 8 + 8
+ld A, 0
+ld [HL], A
 
 ; turn that shit back on
 ld HL, $FF40
@@ -104,3 +130,10 @@ bgtiles:
 	.DB $80,$0F,$F0,$80,$FF,$F0,$FF,$7F
 	.DB $7F,$0F,$0F,$00,$07,$E0,$00,$F8
 bgtileend:
+
+sprites:
+	.DB $00,$00,$3C,$3C,$7E,$7E,$7E,$7E
+	.DB $7E,$00,$7E,$00,$3C,$00,$00,$7C
+	.DB $00,$7E,$00,$7E,$00,$7E,$00,$3E
+	.DB $00,$3E,$00,$3E,$36,$36,$36,$36
+spritesend:
