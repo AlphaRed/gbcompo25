@@ -39,6 +39,7 @@ find_vblank:
 ld HL, $FF40
 res 7, [HL]
 res 4, [HL] ; use 9000 for BG tiles
+set 1, [HL] ; turn on sprites
 
 	
 ; load tiles into VRAM
@@ -46,14 +47,14 @@ ld DE, bgtiles
 ld HL, $9000
 ld BC, bgtileend - bgtiles
 
-copy_loop:
+copy_bg_tiles_loop:
 	ld A, [DE]
 	inc DE
 	ld [HL+], A
 	dec BC
 	ld A, B
 	or A, C
-	jp nz, copy_loop
+	jp nz, copy_bg_tiles_loop
 
 ; set the tilemap
 ld HL, $9800 + 4 * 32
@@ -80,6 +81,20 @@ skip_loop:
 	dec C
 	ld B, 20
 	jp nz, skip_loop
+
+; turn that shit back on
+ld HL, $FF40
+set 7, [HL]
+
+; clear OAM
+ld A, 0
+ld B, 160
+ld HL, $8000
+
+clear_OAM_loop:
+	ld [HL+], A
+	dec B
+	jp nz, clear_OAM_loop
 
 ; load sprites into VRAM
 ld DE, sprites
@@ -113,7 +128,10 @@ ld HL, $FF40
 set 7, [HL]
 
 ; set the palette to default colours
-ld HL, $FF47
+ld HL, $FF47 ; BG tiles
+ld [HL], %11100100
+
+ld HL, $FF48 ; sprites
 ld [HL], %11100100
 
 loop:
