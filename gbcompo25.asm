@@ -40,6 +40,7 @@ ld HL, $FF40
 res 7, [HL]
 res 4, [HL] ; use 9000 for BG tiles
 set 1, [HL] ; turn on sprites
+set 2, [HL] ; 8x16 sprites
 
 	
 ; load tiles into VRAM
@@ -82,14 +83,10 @@ skip_loop:
 	ld B, 20
 	jp nz, skip_loop
 
-; turn that shit back on
-ld HL, $FF40
-set 7, [HL]
-
 ; clear OAM
 ld A, 0
 ld B, 160
-ld HL, $8000
+ld HL, $FE00
 
 clear_OAM_loop:
 	ld [HL+], A
@@ -113,14 +110,11 @@ copy_sprite_loop:
 ; set sprite pos
 ld HL, $FE00
 ld A, 16
-ld [HL], A
-
-ld HL, $FE00 + 8
-ld A, 16
-ld [HL], A
-
-ld HL, $FE00 + 8 + 8
+ld [HL+], A
+ld A, 8
+ld [HL+], A
 ld A, 0
+ld [HL+], A
 ld [HL], A
 
 ; turn that shit back on
