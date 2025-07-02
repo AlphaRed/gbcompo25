@@ -47,15 +47,7 @@ set 2, [HL] ; 8x16 sprites
 ld DE, bgtiles
 ld HL, $9000
 ld BC, bgtileend - bgtiles
-
-copy_bg_tiles_loop:
-	ld A, [DE]
-	inc DE
-	ld [HL+], A
-	dec BC
-	ld A, B
-	or A, C
-	jp nz, copy_bg_tiles_loop
+call copy_loop
 
 ; set the tilemap
 ld HL, $9800 + 4 * 32
@@ -97,15 +89,7 @@ clear_OAM_loop:
 ld DE, sprites
 ld HL, $8000
 ld BC, spritesend - sprites
-
-copy_sprite_loop:
-	ld A, [DE]
-	inc DE
-	ld [HL+], A
-	dec BC
-	ld A, B
-	or A, C
-	jp nz, copy_sprite_loop
+call copy_loop
 
 ; set sprite pos
 ld HL, $FE00
@@ -131,6 +115,19 @@ ld [HL], %11100100
 loop:
 	nop
 	jp loop
+
+; DE -> start of data to be copied
+; HL -> address of where to put the data copied
+; BC -> length of data copied
+copy_loop:
+	ld A, [DE]
+	inc DE
+	ld [HL+], A
+	dec BC
+	ld A, B
+	or A, C
+	jp nz, copy_loop
+	ret
 
 bgtiles:
 	.DB $00,$00,$00,$00,$00,$00,$00,$00
