@@ -52,23 +52,13 @@ call copy_loop
 ; set the tilemap
 ld HL, $9800 + 2 * 32 ; skip two top rows
 ld A, 1
-ld B, 10
+ld B, 20
 
-left_block_loop:
+block_loop:
 	ld [HL+], A
-	inc HL
+	call change_tile
 	dec B
-	jp nz, left_block_loop
-
-ld HL, $9800 + 2 * 32 + 1 ; skip two top rows
-ld A, 2
-ld B, 10
-
-right_block_loop:
-	ld [HL+], A
-	inc HL
-	dec B
-	jp nz, right_block_loop
+	jp nz, block_loop
 
 ; clear OAM
 ld A, 0
@@ -132,6 +122,16 @@ copy_loop:
 	or A, C
 	jp nz, copy_loop
 	ret
+
+; For changing inbetween bg tiles
+change_tile:
+	inc A
+	cp 2
+	jp nz, @set_A_1
+	ret
+	@set_A_1:
+		ld A, 1
+		ret
 
 bgtiles:
 	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
