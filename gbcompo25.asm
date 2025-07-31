@@ -139,12 +139,12 @@ copy_loop:
 	ret
 
 bgtiles:
+	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 	.DB $86,$86,$79,$79,$7F,$7F,$7F,$3F
 	.DB $7F,$5F,$7F,$2F,$7F,$57,$80,$80
 	.DB $01,$01,$FE,$EA,$FE,$F4,$FE,$FA
 	.DB $FE,$FE,$FE,$FE,$FE,$FE,$01,$01
-	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 bgtileend:
 
 sprites:
