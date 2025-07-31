@@ -114,6 +114,15 @@ ld [HL], %11100100
 
 loop:
 	nop
+	
+	; input
+	ld HL, $FF00
+	res 4, [HL] ; check dpad
+	
+	
+	; logic
+	; render
+	
 	jp loop
 
 ; DE -> start of data to be copied
@@ -130,14 +139,12 @@ copy_loop:
 	ret
 
 bgtiles:
-	.DB $00,$00,$00,$00,$00,$00,$00,$00
-	.DB $00,$00,$00,$00,$00,$00,$00,$00
-	.DB $A5,$00,$FF,$00,$BA,$45,$00,$FF
-	.DB $00,$FF,$00,$FF,$00,$FF,$00,$FF
-	.DB $24,$DB,$82,$7D,$53,$AC,$18,$E7
-	.DB $24,$DB,$03,$FC,$26,$D9,$3A,$C5
-	.DB $80,$0F,$F0,$80,$FF,$F0,$FF,$7F
-	.DB $7F,$0F,$0F,$00,$07,$E0,$00,$F8
+	.DB $86,$86,$79,$79,$7F,$7F,$7F,$3F
+	.DB $7F,$5F,$7F,$2F,$7F,$57,$80,$80
+	.DB $01,$01,$FE,$EA,$FE,$F4,$FE,$FA
+	.DB $FE,$FE,$FE,$FE,$FE,$FE,$01,$01
+	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 bgtileend:
 
 sprites:
