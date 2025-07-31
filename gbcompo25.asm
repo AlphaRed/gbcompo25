@@ -50,30 +50,25 @@ ld BC, bgtileend - bgtiles
 call copy_loop
 
 ; set the tilemap
-ld HL, $9800 + 4 * 32
+ld HL, $9800 + 2 * 32 ; skip two top rows
 ld A, 1
-ld B, 20
+ld B, 10
 
-grass_loop:
+left_block_loop:
 	ld [HL+], A
+	inc HL
 	dec B
-	jp nz, grass_loop
+	jp nz, left_block_loop
 
-ld HL, $9800 + 5 * 32
+ld HL, $9800 + 2 * 32 + 1 ; skip two top rows
 ld A, 2
-ld B, 20
-ld DE, 12
-ld C, 13
+ld B, 10
 
-skip_loop:
-	dirt_loop:
-		ld [HL+], A
-		dec B
-		jp nz, dirt_loop
-	add HL, DE
-	dec C
-	ld B, 20
-	jp nz, skip_loop
+right_block_loop:
+	ld [HL+], A
+	inc HL
+	dec B
+	jp nz, right_block_loop
 
 ; clear OAM
 ld A, 0
