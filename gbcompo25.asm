@@ -47,18 +47,62 @@ set 2, [HL] ; 8x16 sprites
 ld DE, bgtiles
 ld HL, $9000
 ld BC, bgtileend - bgtiles
-call copy_loop
+call copy_loop	
 
-; set the tilemap
-ld HL, $9800 + 2 * 32 ; skip two top rows
+; top two rows of blocks
+ld HL, $9800 + 2 * 32
 ld A, 1
 ld B, 20
-
 block_loop:
 	ld [HL+], A
 	call change_tile
 	dec B
 	jp nz, block_loop
+
+ld BC, 12
+add HL, BC
+ld A, 2
+ld B, 20
+block_loop2:
+	ld [HL+], A
+	call change_tile
+	dec B
+	jp nz, block_loop2
+	
+; middle empty section
+ld A, 0
+ld D, 12
+middle_section_loop:
+	ld BC, 12
+	add HL, BC
+	ld B, 20
+	place_tile_loop:
+		ld [HL+], A
+		dec B
+		jp nz, place_tile_loop
+	dec D
+	jp nz, middle_section_loop
+	
+; bottom two rows of blocks
+ld BC, 12
+add HL, BC
+ld A, 1
+ld B, 20
+block_loop3:
+	ld [HL+], A
+	call change_tile
+	dec B
+	jp nz, block_loop3
+
+ld BC, 12
+add HL, BC
+ld A, 2
+ld B, 20
+block_loop4:
+	ld [HL+], A
+	call change_tile
+	dec B
+	jp nz, block_loop4
 
 ; clear OAM
 ld A, 0
