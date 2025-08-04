@@ -120,7 +120,7 @@ ld HL, $8000
 ld BC, spritesend - sprites
 call copy_loop
 
-; set sprite pos
+; set sprite pos, leftside
 ld HL, $FE00
 ld A, 16
 ld [HL+], A
@@ -128,6 +128,16 @@ ld A, 8
 ld [HL+], A
 ld A, 0
 ld [HL+], A
+ld [HL], A
+; rightside
+ld HL, $FE04
+ld A, 16
+ld [HL+], A
+ld A, 16
+ld [HL+], A
+ld A, 2
+ld [HL+], A
+ld A, 0
 ld [HL], A
 
 ; turn that shit back on
@@ -187,8 +197,12 @@ bgtiles:
 bgtileend:
 
 sprites:
-	.DB $00,$00,$3C,$3C,$7E,$7E,$7E,$7E
-	.DB $7E,$00,$7E,$00,$3C,$00,$00,$7C
-	.DB $00,$7E,$00,$7E,$00,$7E,$00,$3E
-	.DB $00,$3E,$00,$3E,$36,$36,$36,$36
+	.DB $00,$00,$00,$00,$00,$00,$1F,$00
+	.DB $00,$00,$80,$00,$C3,$00,$FF,$00
+	.DB $7F,$00,$0F,$00,$07,$00,$03,$00
+	.DB $01,$00,$00,$00,$08,$00,$07,$00
+	.DB $00,$00,$00,$00,$C0,$00,$FE,$00
+	.DB $C0,$00,$F0,$00,$F8,$00,$0C,$00
+	.DB $06,$00,$06,$00,$06,$00,$FE,$00
+	.DB $FC,$00,$F8,$00,$89,$00,$FE,$00
 spritesend:
