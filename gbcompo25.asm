@@ -29,14 +29,16 @@
 .ORG $0150
 start:
 
+.INCLUDE "variables.i"
+
 ; find vblank period
 find_vblank:
-	ld A, [$FF44]
+	ld A, [LCDY]
 	cp 144
 	jp c, find_vblank
 	
 ; turn off LCD
-ld HL, $FF40
+ld HL, LCDC
 res 7, [HL]
 res 4, [HL] ; use 9000 for BG tiles
 set 1, [HL] ; turn on sprites
