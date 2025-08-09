@@ -4,4 +4,8 @@
 .DEFINE LCDC $FF40 ; LCD control reg
 
 ; Global variable definitions
+.DEFINE PLAYER_Y $C000
+.DEFINE PLAYER_X $C002
+.DEFINE PLAYER_X2 $C004 ; for the second sprite
+
 ; Other?

@@ -30,6 +30,14 @@
 start:
 
 .INCLUDE "variables.i"
+; setup player
+ld HL, PLAYER_Y
+ld [HL], 64
+ld HL, PLAYER_X
+ld [HL], 32
+ld HL, PLAYER_X2
+ld [HL], 32 + 8
+
 
 ; find vblank period
 find_vblank:
@@ -43,7 +51,6 @@ res 7, [HL]
 res 4, [HL] ; use 9000 for BG tiles
 set 1, [HL] ; turn on sprites
 set 2, [HL] ; 8x16 sprites
-
 	
 ; load tiles into VRAM
 ld DE, bgtiles
@@ -124,18 +131,18 @@ call copy_loop
 
 ; set sprite pos, leftside
 ld HL, $FE00
-ld A, 16
+ld A, [PLAYER_Y]
 ld [HL+], A
-ld A, 8
+ld A, [PLAYER_X]
 ld [HL+], A
 ld A, 0
 ld [HL+], A
 ld [HL], A
 ; rightside
 ld HL, $FE04
-ld A, 16
+ld A, [PLAYER_Y]
 ld [HL+], A
-ld A, 16
+ld A, [PLAYER_X2]
 ld [HL+], A
 ld A, 2
 ld [HL+], A
