@@ -38,6 +38,9 @@ ld [HL], 32
 ld HL, PLAYER_X2
 ld [HL], 32 + 8
 
+; setup other globals
+ld A, [FRAMECOUNTER]
+ld A, 0
 
 ; find vblank period
 find_vblank:
@@ -169,7 +172,32 @@ loop:
 	
 	
 	; logic
+	ld HL, PLAYER_Y ; calculate gravity
+	ld A, [PLAYER_Y]
+	inc A
+	ld [HL], A
+	
 	; render
+	find_vblank2:
+		ld A, [LCDY]
+		cp 144
+		jp c, find_vblank2
+	
+	ld A, [FRAMECOUNTER] ; draw only 15 fps
+	inc A
+	ld [FRAMECOUNTER], A
+	cp A, 15
+	jp nz, loop
+	
+	ld A, 0 ; reset frame counter to zero
+	ld [FRAMECOUNTER], A
+	
+	ld HL, $FE00
+	ld A, [PLAYER_Y]
+	ld [HL], A
+	ld HL, $FE04
+	ld A, [PLAYER_Y]
+	ld [HL], A
 	
 	jp loop
 

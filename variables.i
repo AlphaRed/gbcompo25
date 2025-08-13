@@ -8,4 +8,5 @@
 .DEFINE PLAYER_X $C002
 .DEFINE PLAYER_X2 $C004 ; for the second sprite
 
+.DEFINE FRAMECOUNTER $C006
 ; Other?
