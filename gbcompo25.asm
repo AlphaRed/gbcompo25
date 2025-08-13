@@ -172,10 +172,7 @@ loop:
 	
 	
 	; logic
-	ld HL, PLAYER_Y ; calculate gravity
-	ld A, [PLAYER_Y]
-	inc A
-	ld [HL], A
+	
 	
 	; render
 	find_vblank2:
@@ -191,6 +188,11 @@ loop:
 	
 	ld A, 0 ; reset frame counter to zero
 	ld [FRAMECOUNTER], A
+	
+	ld HL, PLAYER_Y ; calculate gravity
+	ld A, [PLAYER_Y]
+	inc A
+	ld [HL], A
 	
 	ld HL, $FE00
 	ld A, [PLAYER_Y]
