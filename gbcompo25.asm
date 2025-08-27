@@ -41,6 +41,8 @@ ld [HL], 32 + 8
 ; setup other globals
 ld A, [FRAMECOUNTER]
 ld A, 0
+ld A, [VELOCITY]
+ld A, 0
 
 ; find vblank period
 find_vblank:
@@ -168,11 +170,16 @@ loop:
 	
 	; input
 	ld HL, $FF00
-	res 4, [HL] ; check dpad
-	
+	res 5, [HL] ; check buttons, not dpad
+	ld A, [$FF00]
+	ld A, [$FF00]
+	ld A, [$FF00]
+	ld A, [$FF00]
+	;and %
+	cp 0
+	jp z, set_velocity
 	
 	; logic
-	
 	
 	; render
 	find_vblank2:
@@ -183,18 +190,21 @@ loop:
 	ld A, [FRAMECOUNTER] ; draw only 15 fps
 	inc A
 	ld [FRAMECOUNTER], A
-	cp A, 15
+	cp 15
 	jp nz, loop
 	
 	ld A, 0 ; reset frame counter to zero
 	ld [FRAMECOUNTER], A
 	
-	ld HL, PLAYER_Y ; calculate gravity
-	ld A, [PLAYER_Y]
-	inc A
-	ld [HL], A
+	ld A, [VELOCITY]
+	cp 1
+	jp z, add_velocity
 	
-	ld HL, $FE00
+	ld A, [PLAYER_Y] ; calculate gravity
+	inc A
+	ld [PLAYER_Y], A
+	
+	ld HL, $FE00 ; update player position
 	ld A, [PLAYER_Y]
 	ld [HL], A
 	ld HL, $FE04
@@ -225,6 +235,21 @@ change_tile:
 	@set_A_1:
 		ld A, 1
 		ret
+
+add_velocity:
+	ld A, [PLAYER_Y] ; maybe look at later
+	dec A
+	dec A
+	ld [PLAYER_Y], A
+	ld A, [VELOCITY] ; clear it
+	ld A, 0
+	ret
+
+set_velocity:
+	ld A, [VELOCITY]
+	inc A
+	ld [VELOCITY], A
+	ret
 
 bgtiles:
 	.DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
