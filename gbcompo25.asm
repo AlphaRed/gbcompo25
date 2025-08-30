@@ -175,9 +175,10 @@ loop:
 	ld A, [$FF00]
 	ld A, [$FF00]
 	ld A, [$FF00]
-	;and %
-	cp 0
-	jp z, set_velocity
+	cpl
+	and $0F
+	cp 1
+	call z, set_velocity
 	
 	; logic
 	
@@ -198,7 +199,7 @@ loop:
 	
 	ld A, [VELOCITY]
 	cp 1
-	jp z, add_velocity
+	call z, add_velocity
 	
 	ld A, [PLAYER_Y] ; calculate gravity
 	inc A
@@ -241,13 +242,12 @@ add_velocity:
 	dec A
 	dec A
 	ld [PLAYER_Y], A
-	ld A, [VELOCITY] ; clear it
-	ld A, 0
+	ld A, 0 ; clear it
+	ld [VELOCITY], A
 	ret
 
 set_velocity:
-	ld A, [VELOCITY]
-	inc A
+	ld A, 1
 	ld [VELOCITY], A
 	ret
 
