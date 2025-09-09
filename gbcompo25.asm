@@ -43,6 +43,8 @@ ld A, [FRAMECOUNTER]
 ld A, 0
 ld A, [VELOCITY]
 ld A, 0
+ld A, [SCROLLCOUNTER]
+ld A, 0
 
 ; find vblank period
 call find_vblank
@@ -205,6 +207,19 @@ loop:
 	ld HL, $FE04
 	ld A, [PLAYER_Y]
 	ld [HL], A
+	
+	ld A, [SCROLLCOUNTER]
+	inc A
+	ld [SCROLLCOUNTER], A
+	cp 2
+	jp nz, loop
+	
+	ld A, 0 ; reset scroll counter
+	ld [SCROLLCOUNTER], A
+	
+	ld A, [$FF43] ; scroll the bg
+	inc A
+	ld [$FF43], A
 	
 	jp loop
 
