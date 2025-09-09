@@ -45,10 +45,7 @@ ld A, [VELOCITY]
 ld A, 0
 
 ; find vblank period
-find_vblank:
-	ld A, [LCDY]
-	cp 144
-	jp c, find_vblank
+call find_vblank
 	
 ; turn off LCD
 ld HL, LCDC
@@ -183,10 +180,7 @@ loop:
 	; logic
 	
 	; render
-	find_vblank2:
-		ld A, [LCDY]
-		cp 144
-		jp c, find_vblank2
+	call find_vblank
 	
 	ld A, [FRAMECOUNTER] ; draw only 15 fps
 	inc A
@@ -249,6 +243,12 @@ add_velocity:
 set_velocity:
 	ld A, 1
 	ld [VELOCITY], A
+	ret
+
+find_vblank:
+	ld A, [LCDY]
+	cp 144
+	jp c, find_vblank
 	ret
 
 bgtiles:
