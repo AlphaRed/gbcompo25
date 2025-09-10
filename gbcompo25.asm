@@ -63,9 +63,9 @@ ld BC, bgtileend - bgtiles
 call copy_loop	
 
 ; top two rows of blocks
-ld HL, $9800 + 2 * 32
+ld HL, $9800 + 2 * BG_WIDTH
 ld A, 1
-ld B, 20
+ld B, SCREEN_WIDTH
 block_loop:
 	ld [HL+], A
 	call change_tile
@@ -75,7 +75,7 @@ block_loop:
 ld BC, 12
 add HL, BC
 ld A, 2
-ld B, 20
+ld B, SCREEN_WIDTH
 block_loop2:
 	ld [HL+], A
 	call change_tile
@@ -88,7 +88,7 @@ ld D, 12
 middle_section_loop:
 	ld BC, 12
 	add HL, BC
-	ld B, 20
+	ld B, SCREEN_WIDTH
 	place_tile_loop:
 		ld [HL+], A
 		dec B
@@ -100,7 +100,7 @@ middle_section_loop:
 ld BC, 12
 add HL, BC
 ld A, 1
-ld B, 20
+ld B, SCREEN_WIDTH
 block_loop3:
 	ld [HL+], A
 	call change_tile
@@ -110,7 +110,7 @@ block_loop3:
 ld BC, 12
 add HL, BC
 ld A, 2
-ld B, 20
+ld B, SCREEN_WIDTH
 block_loop4:
 	ld [HL+], A
 	call change_tile
@@ -216,6 +216,8 @@ loop:
 	
 	ld A, 0 ; reset scroll counter
 	ld [SCROLLCOUNTER], A
+	
+	; add column of blocks
 	
 	ld A, [$FF43] ; scroll the bg
 	inc A
