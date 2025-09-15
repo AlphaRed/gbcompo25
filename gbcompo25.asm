@@ -218,6 +218,33 @@ loop:
 	ld [SCROLLCOUNTER], A
 	
 	; add column of blocks
+	ld HL, $9800 + 2 * BG_WIDTH + SCREEN_WIDTH ; yikes
+	ld A, [$FF43]
+	ld C, A
+	ld B, 0
+	add HL, BC
+	
+	ld BC, BG_WIDTH
+	ld A, 2
+	column_loop:
+		ld [HL], 1
+		add HL, BC
+		dec A
+		jp nz, column_loop
+	
+	ld A, 12
+	column_loop2:
+		ld [HL], 0
+		add HL, BC
+		dec A
+		jp nz, column_loop2
+	
+	ld A, 2
+	column_loop3:
+		ld [HL], 1
+		add HL, BC
+		dec A
+		jp nz, column_loop3
 	
 	ld A, [$FF43] ; scroll the bg
 	inc A
