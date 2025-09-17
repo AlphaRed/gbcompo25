@@ -39,12 +39,14 @@ ld HL, PLAYER_X2
 ld [HL], 32 + 8
 
 ; setup other globals
-ld A, [FRAMECOUNTER]
 ld A, 0
-ld A, [VELOCITY]
+ld [FRAMECOUNTER], A
 ld A, 0
-ld A, [SCROLLCOUNTER]
+ld [VELOCITY], A
+ld A, 7
+ld [SCROLLCOUNTER], A
 ld A, 0
+ld [NEXTBLOCK], A
 
 ; find vblank period
 call find_vblank
@@ -208,21 +210,27 @@ loop:
 	ld A, [PLAYER_Y]
 	ld [HL], A
 	
+	ld A, [$FF43] ; scroll the bg
+	inc A
+	ld [$FF43], A
+	
 	ld A, [SCROLLCOUNTER]
 	inc A
 	ld [SCROLLCOUNTER], A
-	cp 2
+	cp 8
 	jp nz, loop
-	
-	ld A, 0 ; reset scroll counter
-	ld [SCROLLCOUNTER], A
 	
 	; add column of blocks
 	ld HL, $9800 + 2 * BG_WIDTH + SCREEN_WIDTH ; yikes
-	ld A, [$FF43]
+	ld A, [NEXTBLOCK]
 	ld C, A
 	ld B, 0
 	add HL, BC
+	
+	;ld A, [SCROLLCOUNTER]
+	;ld C, A
+	;ld B, 0
+	;add HL, BC
 	
 	ld BC, BG_WIDTH
 	ld A, 2
@@ -232,7 +240,7 @@ loop:
 		dec A
 		jp nz, column_loop
 	
-	ld A, 12
+	ld A, 12 ; don't really need to do this, already zero'd out
 	column_loop2:
 		ld [HL], 0
 		add HL, BC
@@ -246,9 +254,14 @@ loop:
 		dec A
 		jp nz, column_loop3
 	
-	ld A, [$FF43] ; scroll the bg
+	ld A, 0 ; reset scroll counter
+	ld [SCROLLCOUNTER], A
+	
+	ld A, [NEXTBLOCK]
 	inc A
-	ld [$FF43], A
+	ld [NEXTBLOCK], A
+	cp 13
+	call z, reset_next_block
 	
 	jp loop
 
@@ -293,6 +306,11 @@ find_vblank:
 	ld A, [LCDY]
 	cp 144
 	jp c, find_vblank
+	ret
+
+reset_next_block:
+	ld A, 0
+	ld [NEXTBLOCK], A
 	ret
 
 bgtiles:
