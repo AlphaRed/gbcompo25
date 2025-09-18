@@ -227,32 +227,15 @@ loop:
 	ld B, 0
 	add HL, BC
 	
-	;ld A, [SCROLLCOUNTER]
-	;ld C, A
-	;ld B, 0
-	;add HL, BC
-	
 	ld BC, BG_WIDTH
 	ld A, 2
-	column_loop:
-		ld [HL], 1
-		add HL, BC
-		dec A
-		jp nz, column_loop
-	
-	ld A, 12 ; don't really need to do this, already zero'd out
-	column_loop2:
-		ld [HL], 0
-		add HL, BC
-		dec A
-		jp nz, column_loop2
+	call draw_next_block
+
+	ld BC, 12 * BG_WIDTH ; skip to the bottom
+	add HL, BC
 	
 	ld A, 2
-	column_loop3:
-		ld [HL], 1
-		add HL, BC
-		dec A
-		jp nz, column_loop3
+	call draw_next_block
 	
 	ld A, 0 ; reset scroll counter
 	ld [SCROLLCOUNTER], A
@@ -260,7 +243,7 @@ loop:
 	ld A, [NEXTBLOCK]
 	inc A
 	ld [NEXTBLOCK], A
-	cp 13
+	cp 12
 	call z, reset_next_block
 	
 	jp loop
@@ -311,6 +294,13 @@ find_vblank:
 reset_next_block:
 	ld A, 0
 	ld [NEXTBLOCK], A
+	ret
+
+draw_next_block:
+	ld [HL], 1
+	add HL, BC
+	dec A
+	jp nz, draw_next_block
 	ret
 
 bgtiles:
