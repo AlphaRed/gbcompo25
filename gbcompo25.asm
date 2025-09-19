@@ -47,6 +47,8 @@ ld A, 7
 ld [SCROLLCOUNTER], A
 ld A, 0
 ld [NEXTBLOCK], A
+ld A, 2
+ld [BLOCKTILE], A
 
 ; find vblank period
 call find_vblank
@@ -227,6 +229,8 @@ loop:
 	ld B, 0
 	add HL, BC
 	
+	ld A, [BLOCKTILE]
+	ld D, A
 	ld BC, BG_WIDTH
 	ld A, 2
 	call draw_next_block
@@ -234,6 +238,8 @@ loop:
 	ld BC, 12 * BG_WIDTH ; skip to the bottom
 	add HL, BC
 	
+	ld A, [BLOCKTILE]
+	ld D, A
 	ld A, 2
 	call draw_next_block
 	
@@ -245,6 +251,10 @@ loop:
 	ld [NEXTBLOCK], A
 	cp 12
 	call z, reset_next_block
+	
+	ld A, [BLOCKTILE]
+	call change_tile
+	ld [BLOCKTILE], A
 	
 	jp loop
 
@@ -297,8 +307,13 @@ reset_next_block:
 	ret
 
 draw_next_block:
-	ld [HL], 1
+	ld E, A
+	ld A, D
+	call change_tile
+	ld [HL], A
 	add HL, BC
+	ld D, A
+	ld A, E
 	dec A
 	jp nz, draw_next_block
 	ret
