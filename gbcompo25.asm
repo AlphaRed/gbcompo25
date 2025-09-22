@@ -188,10 +188,10 @@ loop:
 	; render
 	call find_vblank
 	
-	ld A, [FRAMECOUNTER] ; draw only 15 fps
+	ld A, [FRAMECOUNTER] ; draw only every 2 frames
 	inc A
 	ld [FRAMECOUNTER], A
-	cp 15
+	cp 2
 	jp nz, loop
 	
 	ld A, 0 ; reset frame counter to zero
@@ -240,6 +240,7 @@ loop:
 	
 	ld A, [BLOCKTILE]
 	ld D, A
+	ld BC, BG_WIDTH
 	ld A, 2
 	call draw_next_block
 	
@@ -298,7 +299,7 @@ set_velocity:
 find_vblank:
 	ld A, [LCDY]
 	cp 144
-	jp c, find_vblank
+	jp nz, find_vblank
 	ret
 
 reset_next_block:
