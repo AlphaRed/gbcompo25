@@ -184,6 +184,30 @@ loop:
 	call z, set_velocity
 	
 	; logic
+	ld A, [PLAYER_Y] ; collision, all WIP
+	sra A
+	sra A
+	sra A
+	sla A
+	sla A
+	sla A
+	sla A
+	sla A
+	ld B, A
+	ld A, [PLAYER_X]
+	sub 8
+	add A, B
+	ld B, 0
+	ld C, A
+	ld HL, $9800
+	add HL, BC
+	ld A, [HL]
+	cp 1
+	call nc, player_dead
+	
+	; check top
+	; check bottom
+	
 	
 	; render
 	call find_vblank
@@ -317,6 +341,12 @@ draw_next_block:
 	ld A, E
 	dec A
 	jp nz, draw_next_block
+	ret
+
+player_dead:
+	ld A, 0
+	ld [VELOCITY], A
+	;ld [GRAVITY], A ; probably make a gravity value too
 	ret
 
 bgtiles:
