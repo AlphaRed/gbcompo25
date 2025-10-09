@@ -49,6 +49,8 @@ ld A, 0
 ld [NEXTBLOCK], A
 ld A, 2
 ld [BLOCKTILE], A
+ld A, 1
+ld [GRAVITY], A
 
 ; find vblank period
 call find_vblank
@@ -225,9 +227,9 @@ loop:
 	cp 1
 	call z, add_velocity
 	
-	ld A, [PLAYER_Y] ; calculate gravity
-	inc A
-	ld [PLAYER_Y], A
+	ld A, [GRAVITY]
+	cp 1
+	call z, add_gravity
 	
 	ld HL, $FE00 ; update player position
 	ld A, [PLAYER_Y]
@@ -346,7 +348,13 @@ draw_next_block:
 player_dead:
 	ld A, 0
 	ld [VELOCITY], A
-	;ld [GRAVITY], A ; probably make a gravity value too
+	ld [GRAVITY], A
+	ret
+
+add_gravity:
+	ld A, [PLAYER_Y]
+	inc A
+	ld [PLAYER_Y], A
 	ret
 
 bgtiles:
