@@ -187,6 +187,7 @@ loop:
 	
 	; logic
 	ld A, [PLAYER_Y] ; collision, all WIP
+	sub 16
 	sra A
 	sra A
 	sra A
@@ -198,6 +199,9 @@ loop:
 	ld B, A
 	ld A, [PLAYER_X]
 	sub 8
+	sra A
+	sra A
+	sra A
 	add A, B
 	ld B, 0
 	ld C, A
@@ -205,7 +209,7 @@ loop:
 	add HL, BC
 	ld A, [HL]
 	cp 1
-	call nc, player_dead
+	call z, player_dead
 	
 	; check top
 	; check bottom
